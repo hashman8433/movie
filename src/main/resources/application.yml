@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:mysql://106.13.214.186:3307/movie?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
+    username: root
+    password: zyhy2018
+    filters: wall,mergeStat
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+    #����mybatis
+mybatis:
+  type-aliases-package: com.yixuan.pojo
+  mapper-locations: classpath:mybatis/mapper/user/*.xml
+
