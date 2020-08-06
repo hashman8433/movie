@@ -23,8 +23,8 @@
 
         <!-- 数据库连接 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3307/movie"
-                        userId="root" password="" />
+                        connectionURL="jdbc:mysql://106.13.214.186:3307/movie"
+                        userId="root" password="zyhy2018" />
 
         <!--类处理器-->
         <javaTypeResolver type="org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl">
@@ -32,7 +32,7 @@
         </javaTypeResolver>
 
         <!-- java模型生成配置 -->
-        <javaModelGenerator targetPackage="com.free.movie.model" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.free.video.model" targetProject="src/main/java">
             <property name="enableSubPackages" value="false"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -43,7 +43,7 @@
         </sqlMapGenerator>
 
         <!--接口生成配置-->
-        <javaClientGenerator targetPackage="com.free.movie.mapper" targetProject="src/main/java/"
+        <javaClientGenerator targetPackage="com.free.video.dao" targetProject="src/main/java/"
                              type="XMLMAPPER">
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
