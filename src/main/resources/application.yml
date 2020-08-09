@@ -1,16 +1,17 @@
 spring:
   datasource:
-    url: jdbc:mysql://106.13.214.186:3307/movie?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
-    username: root
-    password: zyhy2018
-    filters: wall,mergeStat
+    url: jdbc:mysql://192.168.99.156:33060/movie?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
+    username: movie
+    password: movie
     driver-class-name: com.mysql.cj.jdbc.Driver
-
-jpa:
     show-sql: true
 
 server:
     port: 8081
+
+filePath: E:/download
+
+
 
 #mybatis:
 #  type-aliases-package: com.yixuan.pojo
