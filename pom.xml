@@ -66,12 +66,12 @@
 			<version>1.16</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.project.lombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.12</version>
-			<scope>provided</scope>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.project.lombok</groupId>-->
+<!--			<artifactId>lombok</artifactId>-->
+<!--			<version>1.18.6</version>-->
+<!--			<scope>provided</scope>-->
+<!--		</dependency>-->
 
 		<!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
 		<dependency>

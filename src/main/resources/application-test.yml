@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:mysql://192.168.99.156:33060/movie_test?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
+    username: movie_test
+    password: movie_test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    show-sql: true
+
+server:
+    port: 8081
+
+filePath: E:/download
+imgPath: E:/download
+
+
+
+#mybatis:
+#  type-aliases-package: com.yixuan.pojo
+#  mapper-locations: classpath:mybatis/mapper/user/*.xml
+
+
+

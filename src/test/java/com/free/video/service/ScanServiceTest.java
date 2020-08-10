@@ -17,7 +17,7 @@ public class ScanServiceTest {
     public void scanVideo() throws InterruptedException {
         final String filePath = "E:\\迅雷下载";
 
-        final Queue fileQuene = new ArrayBlockingQueue(100);
+        final Queue fileQuene = new ArrayBlockingQueue(10000);
 
         ExecutorService findFileExecutor = Executors.newSingleThreadExecutor();
         ExecutorService saveFileExecutor = Executors.newSingleThreadExecutor();

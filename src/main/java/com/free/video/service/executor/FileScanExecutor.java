@@ -1,5 +1,6 @@
 package com.free.video.service.executor;
 
+import com.free.common.config.Const;
 import com.free.common.utils.RegexUtils;
 import com.free.video.model.VideoFile;
 import org.springframework.cglib.core.ReflectUtils;
@@ -44,8 +45,7 @@ public class FileScanExecutor implements Runnable {
         File[] tempList = file.listFiles();
 
         for (int i = 0; i < tempList.length; i++) {
-            File tempFile = tempList[i];
-            if (tempFile.isFile()) {
+            File tempFile = tempList[i]; if (tempFile.isFile()) {
                 String fileName = tempFile.getName();
                 if (! RegexUtils.isMatch(RegexUtils.VIDEO_FILE, fileName)) {
                     // 非视频 文件不保存
@@ -64,6 +64,8 @@ public class FileScanExecutor implements Runnable {
 
                     videoFile.setTitle(tempFile.getName());
                     videoFile.setFileSize(String.valueOf(tempFile.getTotalSpace()));
+                    videoFile.setScanStatus(Const.NOSCAN);
+                    videoFile.setIsDelete(Const.NO_DELETE);
 
                     offerFail = !fileQuene.add(videoFile);
                     if (offerFail) {

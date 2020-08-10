@@ -37,7 +37,7 @@ public class VideoFile {
     private String title;
 
 
-    @Column(name = "fileName")
+    @Column(name = "file_name")
     private String fileName;
 
     /**
@@ -60,7 +60,7 @@ public class VideoFile {
      *
      * @mbggenerated Tue Aug 04 23:32:40 CST 2020
      */
-    @Column(name = "fileSize")
+    @Column(name = "file_size")
     private String fileSize;
 
     @Column(name = "scan_status")
@@ -72,7 +72,7 @@ public class VideoFile {
      *
      * @mbggenerated Tue Aug 04 23:32:40 CST 2020
      */
-    @Column(name = "updateTime")
+    @Column(name = "update_time")
     private Date updateTime;
 
     /**
@@ -81,7 +81,7 @@ public class VideoFile {
      *
      * @mbggenerated Tue Aug 04 23:32:40 CST 2020
      */
-    @Column(name = "createTime")
+    @Column(name = "create_time")
     private Date createTime;
 
     /**
