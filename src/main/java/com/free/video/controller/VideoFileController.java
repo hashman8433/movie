@@ -1,5 +1,6 @@
 package com.free.video.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.free.common.config.Const;
 import com.free.common.resp.Result;
 import com.free.common.utils.CommandUtil;
@@ -7,6 +8,7 @@ import com.free.video.dao.ImgFileDao;
 import com.free.video.dao.VideoFileDao;
 import com.free.video.model.ImgFile;
 import com.free.video.model.VideoFile;
+import com.free.video.model.VideoFileDto;
 import com.free.video.service.GenerateImgService;
 import com.free.video.service.ScanService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -47,12 +50,37 @@ public class VideoFileController {
     private final ExecutorService findFileExecutor = Executors.newSingleThreadExecutor();
     private final ExecutorService saveFileExecutor = Executors.newSingleThreadExecutor();
 
+
     @RequestMapping("list")
     public Result list(VideoFile vedioFile) {
         List<VideoFile> videoFiles = videoFileDao.findAll(Example.of(vedioFile));
+        List<VideoFile> videoFileDtos = new ArrayList<>();
+
+        if (! CollectionUtils.isEmpty(videoFiles)) {
+            videoFiles.forEach(videoFile -> {
+                try {
+                    VideoFileDto videoFileDto = new VideoFileDto();
+                    BeanUtil.copyProperties(videoFile, videoFileDto);
+                    ImgFile imgFileVo = ImgFile.class.newInstance();
+                    imgFileVo.setVideoFileId(videoFile.getId());
+                    List<ImgFile> imgFiles = imgFileDao.findAll(Example.of(imgFileVo));
+                    if (CollectionUtils.isEmpty(imgFiles)) {
+                        return;
+                    }
+
+                    videoFileDto.setImgPathWeb(imgFiles.get(0).getFilePathWeb());
+                    videoFileDtos.add(videoFileDto);
+
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
 
         return new Result("0", "SUCCESS",
-                videoFiles);
+                videoFileDtos);
     }
 
 
@@ -101,7 +129,9 @@ public class VideoFileController {
             Date now = new Date();
             ImgFile imgFileBo = ImgFile.class.newInstance();
             imgFileBo.setFilePath(imgFile.getAbsolutePath());
-            imgFileBo.setFilePathWeb(imgFile.getAbsolutePath().replace(imgPath, ""));
+            imgFileBo.setFilePathWeb("static/ext/" + imgFile.getAbsolutePath()
+                    .replace(imgPath.replaceAll("/", "\\\\"), "")
+                    .replace("\\", "/"));
             imgFileBo.setCreateTime(now);
             imgFileBo.setUpdateTime(now);
             imgFileBo.setVideoFileId(videoFile.getId());

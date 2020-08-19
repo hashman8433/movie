@@ -40,7 +40,6 @@ public class FileScanExecutor implements Runnable {
      */
     public void getAllFileName(final String path) throws InterruptedException {
 
-        boolean flag = false;
         File file = new File(path);
         File[] tempList = file.listFiles();
 
@@ -59,7 +58,10 @@ public class FileScanExecutor implements Runnable {
 
                     VideoFile videoFile = (VideoFile) ReflectUtils.newInstance(VideoFile.class);
                     videoFile.setFilePath(tempFile.getAbsolutePath());
-                    videoFile.setFilePathWeb(tempFile.getAbsolutePath().replace(path, ""));
+                    videoFile.setFilePathWeb("static/ext/" +
+                            (tempFile.getAbsolutePath().replace(filePath.replaceAll("/", "\\\\"), "")
+                                    .replace("\\", "/"))
+                    );
                     videoFile.setFileName(tempFile.getName());
 
                     videoFile.setTitle(tempFile.getName());

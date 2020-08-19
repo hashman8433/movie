@@ -92,4 +92,5 @@ public class VideoFile {
      */
     @Column(name = "isDelete")
     private String isDelete;
+
 }

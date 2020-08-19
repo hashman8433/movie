@@ -78,6 +78,9 @@ public class ScanServiceTest {
     @Test
     public void testRegex() {
 
+        System.out.println("E:\\迅雷下载\\NASH331\\nash00331.mp4".replace("E:\\迅雷下载", ""));
+        System.out.println("E:/迅雷下载");
+        System.out.println("E:/迅雷下载".replaceAll("/", "\\\\"));
 
         RegexUtils.isMatch("^.*.(mp4|avi)$", "asdfas.mp4");
         RegexUtils.isMatch("^.*.(mp4|avi)$", "asdfas.avi");
