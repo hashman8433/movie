@@ -21,7 +21,6 @@ public class VideoApplicationTest {
     @Test
     public void testSelect() {
         List<VideoFile> all = videoFileDao.findAll();
-
         System.out.println(all);
     }
 
