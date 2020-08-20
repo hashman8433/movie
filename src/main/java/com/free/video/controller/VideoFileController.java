@@ -60,6 +60,7 @@ public class VideoFileController {
             videoFiles.forEach(videoFile -> {
                 try {
                     VideoFileDto videoFileDto = new VideoFileDto();
+                    videoFileDtos.add(videoFileDto);
                     BeanUtil.copyProperties(videoFile, videoFileDto);
                     ImgFile imgFileVo = ImgFile.class.newInstance();
                     imgFileVo.setVideoFileId(videoFile.getId());
@@ -69,7 +70,6 @@ public class VideoFileController {
                     }
 
                     videoFileDto.setImgPathWeb(imgFiles.get(0).getFilePathWeb());
-                    videoFileDtos.add(videoFileDto);
 
                 } catch (InstantiationException e) {
                     e.printStackTrace();
