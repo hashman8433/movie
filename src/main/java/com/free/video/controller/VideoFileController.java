@@ -56,28 +56,31 @@ public class VideoFileController {
         List<VideoFile> videoFiles = videoFileDao.findAll(Example.of(vedioFile));
         List<VideoFile> videoFileDtos = new ArrayList<>();
 
-        if (! CollectionUtils.isEmpty(videoFiles)) {
-            videoFiles.forEach(videoFile -> {
-                try {
-                    VideoFileDto videoFileDto = new VideoFileDto();
-                    videoFileDtos.add(videoFileDto);
-                    BeanUtil.copyProperties(videoFile, videoFileDto);
-                    ImgFile imgFileVo = ImgFile.class.newInstance();
-                    imgFileVo.setVideoFileId(videoFile.getId());
-                    List<ImgFile> imgFiles = imgFileDao.findAll(Example.of(imgFileVo));
-                    if (CollectionUtils.isEmpty(imgFiles)) {
-                        return;
-                    }
-
-                    videoFileDto.setImgPathWeb(imgFiles.get(0).getFilePathWeb());
-
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            });
+        if (CollectionUtils.isEmpty(videoFiles)) {
+            return new Result("0", "SUCCESS",
+                    videoFiles);
         }
+
+        videoFiles.forEach(videoFile -> {
+            try {
+                VideoFileDto videoFileDto = new VideoFileDto();
+                videoFileDtos.add(videoFileDto);
+                BeanUtil.copyProperties(videoFile, videoFileDto);
+                ImgFile imgFileVo = ImgFile.class.newInstance();
+                imgFileVo.setVideoFileId(videoFile.getId());
+                List<ImgFile> imgFiles = imgFileDao.findAll(Example.of(imgFileVo));
+                if (CollectionUtils.isEmpty(imgFiles)) {
+                    return;
+                }
+
+                videoFileDto.setImgPathWeb(imgFiles.get(0).getFilePathWeb());
+
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        });
 
         return new Result("0", "SUCCESS",
                 videoFileDtos);
