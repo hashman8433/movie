@@ -1,6 +1,7 @@
 package com.free.movie;
 
 import com.free.VideoApplication;
+import com.free.base.BaseSpringBootTest;
 import com.free.video.model.VideoFile;
 import com.free.video.dao.VideoFileDao;
 import org.junit.Test;
@@ -11,9 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = VideoApplication.class)
-public class VideoApplicationTest {
+public class VideoApplicationTest extends BaseSpringBootTest {
 
     @Autowired
     private VideoFileDao videoFileDao;

@@ -1,7 +1,9 @@
 package com.free.video.service;
 
+import com.free.base.BaseSpringBootTest;
 import com.free.common.utils.RegexUtils;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.util.List;
@@ -11,11 +13,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
-public class ScanServiceTest {
+public class ScanServiceTest extends BaseSpringBootTest {
+
+
+    @Value("${filePath}")
+    private String filePath;
 
     @Test
     public void scanVideo() throws InterruptedException {
-        final String filePath = "E:\\迅雷下载";
 
         final Queue fileQuene = new ArrayBlockingQueue(10000);
 
