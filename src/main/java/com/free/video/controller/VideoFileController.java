@@ -44,8 +44,8 @@ public class VideoFileController {
     @Autowired
     private GenerateImgService generateImgService;
 
-    @Value("${imgPath}")
-    public String imgPath;
+    @Value("${filePath}")
+    public String filePath;
 
     private final ExecutorService findFileExecutor = Executors.newSingleThreadExecutor();
     private final ExecutorService saveFileExecutor = Executors.newSingleThreadExecutor();
@@ -132,8 +132,8 @@ public class VideoFileController {
             Date now = new Date();
             ImgFile imgFileBo = ImgFile.class.newInstance();
             imgFileBo.setFilePath(imgFile.getAbsolutePath());
-            imgFileBo.setFilePathWeb("static/ext/" + imgFile.getAbsolutePath()
-                    .replace(imgPath.replaceAll("/", "\\\\"), "")
+            imgFileBo.setFilePathWeb(imgFile.getAbsolutePath()
+                    .replace(filePath.replaceAll("/", "\\\\"), "")
                     .replace("\\", "/"));
             imgFileBo.setCreateTime(now);
             imgFileBo.setUpdateTime(now);
