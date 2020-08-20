@@ -58,9 +58,7 @@ public class FileScanExecutor implements Runnable {
 
                     VideoFile videoFile = (VideoFile) ReflectUtils.newInstance(VideoFile.class);
                     videoFile.setFilePath(tempFile.getAbsolutePath());
-                    videoFile.setFilePathWeb((tempFile.getAbsolutePath().replace(filePath.replaceAll("/", "\\\\"), "")
-                                    .replace("\\", "/"))
-                    );
+                    videoFile.setFilePathWeb(tempFile.getAbsolutePath());
                     videoFile.setFileName(tempFile.getName());
 
                     videoFile.setTitle(tempFile.getName());

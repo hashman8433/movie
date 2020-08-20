@@ -20,12 +20,9 @@ public class GenerateImgService {
     @Value("${filePath}")
     public String filePath;
 
-    @Value("${imgPath}")
-    public String imgPath;
-
     public String generate(String absolutePath) {
 
-        String tmpImgPath = imgPath + "/img/" + DateUtil.format(new Date(), "yyyy-MM-dd") +
+        String tmpImgPath = filePath + "img/" + DateUtil.format(new Date(), "yyyy-MM-dd") +
                 UUID.randomUUID().toString().replace("-", "") + "/";
 
         File imgPath = new File(tmpImgPath);
