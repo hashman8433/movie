@@ -6,6 +6,7 @@ import com.free.video.model.ImgFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +21,7 @@ public class ImgFileController {
     private ImgFileDao imgFileDao;
 
     @RequestMapping("list")
-    public Result list(ImgFile imgFile) {
+    public Result list(@RequestBody ImgFile imgFile) {
         List<ImgFile> imgFileList = imgFileDao.findAll(Example.of(imgFile));
         return new Result("0", "SUCCESS",
                 imgFileList);

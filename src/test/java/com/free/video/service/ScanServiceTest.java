@@ -58,7 +58,8 @@ public class ScanServiceTest extends BaseSpringBootTest {
                     if (tempFile.isFile()) {
 //                        if(tempFile.getName();
                         String fileName = tempFile.getName();
-                        System.out.println("输入文件 " + fileName + " num = " + num.addAndGet(1));
+                        System.out.println("找到文件 " + tempFile.getAbsolutePath() +
+                                " num = " + num.addAndGet(1));
 
                         boolean offerFail = true;
                         while (offerFail) {

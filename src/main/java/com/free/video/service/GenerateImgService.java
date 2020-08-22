@@ -30,7 +30,7 @@ public class GenerateImgService {
 
         log.info("[图片生成] 图片路径：{} 文件夹标识：{}  是否存在：{}", tmpImgPath, imgPath.isDirectory(), imgPath.exists());
         String command = "ffmpeg  -i " + absolutePath + " -vf fps=0.003 " + tmpImgPath + "output%d.jpg";
-        log.info(command);
+
         try {
             CommandUtil.run(command);
         } catch (IOException e) {

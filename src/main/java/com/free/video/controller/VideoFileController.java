@@ -24,8 +24,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("videoFile")
@@ -61,25 +63,29 @@ public class VideoFileController {
                     videoFiles);
         }
 
+        List<ImgFile> imgFileList = imgFileDao.findAll();
+        if (CollectionUtils.isEmpty(imgFileList)) {
+            return new Result("0", "SUCCESS",
+                    videoFiles);
+        }
+
+        Map<String, List<ImgFile>> fileIdMapImgList = imgFileList.stream().collect(Collectors.groupingBy(ImgFile::getVideoFileId));
+
         videoFiles.forEach(videoFile -> {
-            try {
-                VideoFileDto videoFileDto = new VideoFileDto();
-                videoFileDtos.add(videoFileDto);
-                BeanUtil.copyProperties(videoFile, videoFileDto);
-                ImgFile imgFileVo = ImgFile.class.newInstance();
-                imgFileVo.setVideoFileId(videoFile.getId());
-                List<ImgFile> imgFiles = imgFileDao.findAll(Example.of(imgFileVo));
-                if (CollectionUtils.isEmpty(imgFiles)) {
-                    return;
-                }
 
-                videoFileDto.setImgPathWeb(imgFiles.get(0).getFilePathWeb());
+            VideoFileDto videoFileDto = new VideoFileDto();
+            videoFileDtos.add(videoFileDto);
+            BeanUtil.copyProperties(videoFile, videoFileDto);
 
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            // 选出第一张图片作为 封面
+            List<ImgFile> imgFiles = fileIdMapImgList.get(videoFileDto.getId());
+            if (CollectionUtils.isEmpty(imgFiles)) {
+                // 没有图片信息
+                return;
             }
+
+            videoFileDto.setImgPathWeb(imgFiles.get(0).getFilePathWeb());
+
         });
 
         return new Result("0", "SUCCESS",
@@ -104,14 +110,28 @@ public class VideoFileController {
         VideoFile videoFileQuery = VideoFile.class.newInstance();
         videoFileQuery.setScanStatus(Const.NOSCAN);
         List<VideoFile> videoFileList = videoFileDao.findAll(Example.of(videoFileQuery));
-        if (! CollectionUtils.isEmpty(videoFileList)) {
-            VideoFile videoFile = videoFileList.get(0);
-            String filePath = videoFile.getFilePath();
-            String imgFlePathStr = generateImgService.generate(filePath);
-            saveImg(imgFlePathStr, videoFile);
+
+        if (CollectionUtils.isEmpty(videoFileList)) {
+            return new Result("0", "SUCCESS");
         }
 
-        return new Result("0", "SUCCESS");
+        log.info("已发现 {} 个视频未生成图片", videoFileList.size());
+        for (int i = 0; i < videoFileList.size(); i++) {
+
+            VideoFile videoFile = videoFileList.get(i);
+            String filePath = videoFile.getFilePath();
+            String imgFlePathStr = generateImgService.generate(filePath);
+
+            videoFile.setScanStatus(Const.SCAN_SUCCESS);
+            videoFileDao.save(videoFile);
+            saveImg(imgFlePathStr, videoFile);
+
+            log.info("[图片生成完毕] 视频:{}", videoFile.getFilePath());
+            int index = i + 1;
+            log.info("已完成 第{}个视频 剩余{}", index, videoFileList.size() - index);
+        }
+
+        return new Result("0", "SUCCESS", String.format("已扫描%d个视频文件", videoFileList.size()));
     }
 
     /**
