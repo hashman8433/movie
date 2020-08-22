@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
-public class Result {
+public class Result implements Serializable {
 
     public Result(String code, String msg) {
         this.code = code;

@@ -5,6 +5,14 @@ spring:
     password: movie_test
     driver-class-name: com.mysql.cj.jdbc.Driver
     show-sql: true
+  redis:
+    host: 192.168.99.156
+    port: 6379
+    database: 0
+  cache:
+    type: redis # 设置使用 redis 作为缓存 (此行可以不配置)
+    redis:
+      time-to-live: 60s
 
 server:
     port: 8081

@@ -14,8 +14,11 @@ import com.free.video.service.ScanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,9 +56,11 @@ public class VideoFileController {
     private final ExecutorService saveFileExecutor = Executors.newSingleThreadExecutor();
 
 
+    @Cacheable(cacheNames = "vedioFileList", key = "#vedioFile")
     @RequestMapping("list")
-    public Result list(VideoFile vedioFile) {
-        List<VideoFile> videoFiles = videoFileDao.findAll(Example.of(vedioFile));
+    public Result list(@RequestBody VideoFile vedioFile) {
+//        List<VideoFile> videoFiles = videoFileDao.findAll(Example.of(vedioFile));
+        List<VideoFile> videoFiles = videoFileDao.findByFileNameLike(vedioFile.getFileName());
         List<VideoFile> videoFileDtos = new ArrayList<>();
 
         if (CollectionUtils.isEmpty(videoFiles)) {
@@ -81,6 +86,7 @@ public class VideoFileController {
             List<ImgFile> imgFiles = fileIdMapImgList.get(videoFileDto.getId());
             if (CollectionUtils.isEmpty(imgFiles)) {
                 // 没有图片信息
+                videoFileDto.setImgPathWeb("/static/logo.png");
                 return;
             }
 
