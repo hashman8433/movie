@@ -12,8 +12,10 @@ import com.free.video.model.VideoFileDto;
 import com.free.video.service.GenerateImgService;
 import com.free.video.service.ScanService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
@@ -61,7 +63,8 @@ public class VideoFileController {
     public Result list(@RequestBody VideoFile vedioFile) {
 //        List<VideoFile> videoFiles = videoFileDao.findAll(Example.of(vedioFile));
         List<VideoFile> videoFiles = videoFileDao.findByFileNameLike(vedioFile.getFileName());
-        List<VideoFile> videoFileDtos = new ArrayList<>();
+        List<VideoFileDto> videoFileDtos = new ArrayList<>();
+        List<VideoFileDto> videoFileDtoEnds = new ArrayList<>();
 
         if (CollectionUtils.isEmpty(videoFiles)) {
             return new Result("0", "SUCCESS",
@@ -79,7 +82,6 @@ public class VideoFileController {
         videoFiles.forEach(videoFile -> {
 
             VideoFileDto videoFileDto = new VideoFileDto();
-            videoFileDtos.add(videoFileDto);
             BeanUtil.copyProperties(videoFile, videoFileDto);
 
             // 选出第一张图片作为 封面
@@ -87,13 +89,15 @@ public class VideoFileController {
             if (CollectionUtils.isEmpty(imgFiles)) {
                 // 没有图片信息
                 videoFileDto.setImgPathWeb("/static/logo.png");
+                videoFileDtoEnds.add(videoFileDto);
                 return;
             }
 
             videoFileDto.setImgPathWeb(imgFiles.get(0).getFilePathWeb());
-
+            videoFileDtos.add(videoFileDto);
         });
 
+        videoFileDtos.addAll(videoFileDtoEnds);
         return new Result("0", "SUCCESS",
                 videoFileDtos);
     }
@@ -111,33 +115,47 @@ public class VideoFileController {
         return new Result("0", "SUCCESS");
     }
 
+    private static ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     @RequestMapping("generateImg")
-    public Result generateImg() throws IllegalAccessException, InstantiationException {
-        VideoFile videoFileQuery = VideoFile.class.newInstance();
-        videoFileQuery.setScanStatus(Const.NOSCAN);
-        List<VideoFile> videoFileList = videoFileDao.findAll(Example.of(videoFileQuery));
+    public Result generateImg() {
 
-        if (CollectionUtils.isEmpty(videoFileList)) {
-            return new Result("0", "SUCCESS");
-        }
+        executorService.execute(() -> {
 
-        log.info("已发现 {} 个视频未生成图片", videoFileList.size());
-        for (int i = 0; i < videoFileList.size(); i++) {
+            try {
+                VideoFile videoFileQuery = VideoFile.class.newInstance();
+                videoFileQuery.setScanStatus(Const.NOSCAN);
+                List<VideoFile> videoFileList = videoFileDao.findAll(Example.of(videoFileQuery));
 
-            VideoFile videoFile = videoFileList.get(i);
-            String filePath = videoFile.getFilePath();
-            String imgFlePathStr = generateImgService.generate(filePath);
+                if (CollectionUtils.isEmpty(videoFileList)) {
+                    return;
+                }
 
-            videoFile.setScanStatus(Const.SCAN_SUCCESS);
-            videoFileDao.save(videoFile);
-            saveImg(imgFlePathStr, videoFile);
+                log.info("已发现 {} 个视频未生成图片", videoFileList.size());
+                for (int i = 0; i < videoFileList.size(); i++) {
 
-            log.info("[图片生成完毕] 视频:{}", videoFile.getFilePath());
-            int index = i + 1;
-            log.info("已完成 第{}个视频 剩余{}", index, videoFileList.size() - index);
-        }
+                    VideoFile videoFile = videoFileList.get(i);
+                    String filePath = videoFile.getFilePath();
+                    String imgFlePathStr = generateImgService.generate(filePath);
 
-        return new Result("0", "SUCCESS", String.format("已扫描%d个视频文件", videoFileList.size()));
+                    videoFile.setScanStatus(Const.SCAN_SUCCESS);
+                    videoFileDao.save(videoFile);
+                    saveImg(imgFlePathStr, videoFile);
+
+                    log.info("[图片生成完毕] 视频:{}", videoFile.getFilePath());
+                    int index = i + 1;
+                    log.info("已完成 第{}个视频 剩余{}", index, videoFileList.size() - index);
+                }
+                log.info("已扫描{}个视频文件", videoFileList.size());
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
+        });
+
+        return new Result("0", "SUCCESS", "已经开始生成图片");
     }
 
     /**
