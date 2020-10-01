@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.free</groupId>
 	<artifactId>movie</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.3-SNAPSHOT</version>
 	<name>movie</name>
 	<description>家庭影院-电影网站</description>
 
