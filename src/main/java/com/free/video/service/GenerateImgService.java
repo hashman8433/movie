@@ -28,7 +28,7 @@ public class GenerateImgService {
         File imgPath = new File(tmpImgPath);
         imgPath.mkdirs();
 
-        log.info("[图片生成] 图片路径：{} 文件夹标识：{}  是否存在：{}", tmpImgPath, imgPath.isDirectory(), imgPath.exists());
+        log.info("[图片生成] 图片路径：{} File.isDirectory：{}  File.exists：{}", tmpImgPath, imgPath.isDirectory(), imgPath.exists());
         String command = "ffmpeg  -i " + absolutePath + " -vf fps=0.003 " + tmpImgPath + "output%d.jpg";
 
         try {

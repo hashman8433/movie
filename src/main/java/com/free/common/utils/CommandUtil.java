@@ -1,9 +1,12 @@
 package com.free.common.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -20,29 +23,24 @@ public class CommandUtil {
             process = Runtime.getRuntime().exec(command);
             try {
                 //等待命令执行完成
-                exitVal = process.waitFor();
-                if(exitVal == 0){
-                    log.info("命令执行成功 {}", exitVal);
+//                exitVal = process.waitFor();
+                if(process.waitFor(8, TimeUnit.MINUTES)){
+                    log.info("命令执行成功 {}", 0);
                 }else{
-                    log.info("命令执行失败 {}", exitVal);
+                    log.info("命令执行失败 {}", 1);
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.error("[执行异常]", e);
+            } finally {
+                log.info("[执行完毕]");
             }
 
-            InputStream is = process.getInputStream();
-            input = new Scanner(is);
-            while (input.hasNextLine()) {
-                result += input.nextLine() + "\n";
-            }
             result = command + "\n" + result; //加上命令本身，打印出来
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             log.info("命令行 {} 结束执行", command);
-            if (input != null) {
-                input.close();
-            }
+            IOUtils.closeQuietly(input);
             if (process != null) {
                 process.destroy();
             }
