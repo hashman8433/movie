@@ -1,5 +1,6 @@
 package com.free.video.model;
 
+import com.free.video.model.option.SearchOption;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
@@ -7,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -93,5 +95,24 @@ public class VideoFile implements Serializable {
      */
     @Column(name = "isDelete")
     private String isDelete;
+
+    // 当前页
+    @Transient
+    private Integer pageNo;
+
+    // 单页数量
+    @Transient
+    private Integer pageSize;
+
+    // 总页数
+    @Transient
+    private Integer pageTotal;
+
+    // 总条数
+    @Transient
+    private Integer totalNum;
+
+    @Transient
+    private String imgPathWeb;
 
 }
