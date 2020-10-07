@@ -29,6 +29,7 @@ public class GenerateImgService {
         imgPath.mkdirs();
 
         log.info("[图片生成] 图片路径：{} File.isDirectory：{}  File.exists：{}", tmpImgPath, imgPath.isDirectory(), imgPath.exists());
+        // 计算视频总视频 大小
         String command = "ffmpeg  -i " + absolutePath + " -vf fps=0.003 " + tmpImgPath + "output%d.jpg";
 
         try {

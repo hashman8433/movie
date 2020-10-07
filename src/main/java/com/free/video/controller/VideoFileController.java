@@ -152,7 +152,6 @@ public class VideoFileController {
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-
         });
 
         return new Result("0", "SUCCESS", "已经开始生成图片");
