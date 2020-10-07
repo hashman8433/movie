@@ -1,0 +1,66 @@
+# docker version:  18.06.0+
+# docker-compose version: 1.23.2+
+# OpenSSL version: OpenSSL 1.1.0h
+version: '3.7'
+services:
+
+  movie:
+    image: movie:1.0.3
+    container_name: movie
+    hostname: movie-web
+    ports:
+    # 如果宿主机80端口被占用，可自行修改为其他port(>=1024)
+    # 0.0.0.0:要绑定的宿主机端口:docker容器内端口80
+      - "8081:8081"
+        #    depends_on:
+        #- python
+    networks:
+      - movie-net
+    #restart: always
+    volumes:
+      - /home/share/smb:/root/video
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+    command:
+            #export LC_ALL=zh_CN.utf8 &
+     # nohup java -Dfile.encoding=utf-8 -jar /root/movie/movie-0.0.1-SNAPSHOT.jar --spring.profiles.active=test &
+       ping 8.8.8.8
+            
+  redis:
+    image: redis
+    container_name: movie-redis
+    hostname: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - movie-net
+    volumes:
+      - ./config/redis.conf:/etc/redis/redis.conf:rw
+      - ./data:/data:rw
+      # redis-server /etc/redis.conf --appendonly yes
+
+  mysql:
+    image: mysql:5.7
+    container_name: movie-mysql
+    hostname: mysql
+    ports:
+    # 如果宿主机80端口被占用，可自行修改为其他port(>=1024)
+    # 0.0.0.0:要绑定的宿主机端口:docker容器内端口80
+      - "3306:3306"
+        #    depends_on:
+        #- python
+    environment:
+        - "MYSQL_ROOT_PASSWORD=root"
+        - "MYSQL_DATABASE=movie_test"
+        - "TZ=Asia/Shanghai"
+    networks:
+      - movie-net
+
+
+
+networks:
+  movie-net:
+    driver: bridge
