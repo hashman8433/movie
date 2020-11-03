@@ -38,7 +38,8 @@ public class RegexUtils {
      * 正则：身份证号码18位
      */
     public static final String REGEX_ID_CARD18     = "^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9Xx])$";
-    public static final String VIDEO_FILE     = "^.*.(mp4|avi)$";
+
+    public static final String VIDEO_FILE     = "^.*.(mp4|avi|mkv|rmvb)$";
     /**
      * 正则：邮箱
      */

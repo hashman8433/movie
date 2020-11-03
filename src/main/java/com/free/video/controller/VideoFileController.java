@@ -1,24 +1,22 @@
 package com.free.video.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.free.common.config.Const;
 import com.free.common.resp.Result;
 import com.free.common.utils.CommandUtil;
+import com.free.common.utils.FileNameUtils;
 import com.free.video.dao.ImgFileDao;
 import com.free.video.dao.VideoFileDao;
 import com.free.video.model.ImgFile;
 import com.free.video.model.VideoFile;
-import com.free.video.model.VideoFileDto;
 import com.free.video.model.option.SearchOption;
 import com.free.video.service.GenerateImgService;
 import com.free.video.service.ScanService;
+import com.free.video.service.VideoFileService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.support.PagedListHolder;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -29,10 +27,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +53,9 @@ public class VideoFileController {
     @Autowired
     private GenerateImgService generateImgService;
 
+    @Autowired
+    private VideoFileService videoFileService;
+
     @Value("${filePath}")
     public String filePath;
 
@@ -64,6 +63,11 @@ public class VideoFileController {
     private final ExecutorService saveFileExecutor = Executors.newSingleThreadExecutor();
 
 
+    /**
+     * 获取文件列表
+     * @param videoFile
+     * @return
+     */
     @Cacheable(cacheNames = "videoFileList", key = "#videoFile")
     @RequestMapping("list")
     public Result list(@RequestBody @Validated(value = SearchOption.class) VideoFile videoFile) {
@@ -72,7 +76,7 @@ public class VideoFileController {
         }
 
         Page<VideoFile> videoFiles = videoFileDao.findByName(videoFile.getFileName(),
-                PageRequest.of(videoFile.getPageNo(), videoFile.getPageSize(),
+                PageRequest.of(videoFile.getPageNo() - 1, videoFile.getPageSize(),
                         Sort.by("scanStatus")));
 
         if (CollectionUtils.isEmpty(videoFiles.getContent())) {
@@ -112,6 +116,10 @@ public class VideoFileController {
         return new Result("0", "SUCCESS");
     }
 
+    /**
+     * 扫描配置目录下的 视频文件
+     * @return
+     */
     @RequestMapping("updateFiles")
     public Result updateFiles() {
         scanService.scanVideo();
@@ -120,6 +128,73 @@ public class VideoFileController {
 
     private static ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    /**
+     * 检查视频图片 是否已经生成
+     * @return
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
+    @RequestMapping("checkImgIsExist")
+    public Result checkImgIsExist() throws IllegalAccessException, InstantiationException {
+        VideoFile videoFileQuery = VideoFile.class.newInstance();
+        videoFileQuery.setScanStatus(Const.SCAN_SUCCESS);
+        List<VideoFile> videoFileList = videoFileDao.findAll(Example.of(videoFileQuery));
+
+        if (CollectionUtils.isEmpty(videoFileList)) {
+            return Result.SUCCESS;
+        }
+
+        int imgFileNoExistSize = 0;
+
+        for (VideoFile videoFile : videoFileList) {
+            ImgFile imgFileQuery = ImgFile.class.newInstance();
+            imgFileQuery.setVideoFileId(videoFile.getId());
+
+
+            List<ImgFile> imgFileList = imgFileDao.findAll(Example.of(imgFileQuery));
+            if (CollectionUtils.isEmpty(imgFileList)) {
+                log.info("影片：{} 的图片为空 ", videoFile.getFileName());
+                videoFileService.resetScanStatus(videoFile);
+                imgFileNoExistSize++;
+                continue;
+            }
+
+
+            boolean imgFileNoExists = false;
+            for (ImgFile imgFile : imgFileList) {
+                File imgFileObj = new File(imgFile.getFilePath());
+                if (! imgFileObj.exists()) {
+                    imgFileNoExists = true;
+                    break;
+                }
+            }
+
+
+            if (imgFileNoExists) { // 生成的图片文件不存在
+                imgFileNoExistSize++;
+                log.info("影片：{} 的生成图片 不存在 ", videoFile.getFileName());
+
+                videoFileService.resetScanStatus(videoFile);
+
+                ImgFile imgFileDel = ImgFile.class.newInstance();
+                imgFileDel.setVideoFileId(videoFile.getId());
+                imgFileDao.delete(imgFileDel);
+
+            }
+
+        }
+
+        String checkLog = String.format("影片的生成图片 不存在 数量：%s", imgFileNoExistSize);
+        log.info(checkLog);
+
+        return Result.success("检查完成", checkLog);
+
+    }
+
+    /**
+     * 生成视频预览图片
+     * @return
+     */
     @RequestMapping("generateImg")
     public Result generateImg() {
 
@@ -191,8 +266,11 @@ public class VideoFileController {
         File imgFilePath = new File(imgFlePathStr);
         File[] imgFiles = imgFilePath.listFiles();
         if (ArrayUtils.isEmpty(imgFiles)) {
-            throw new IllegalArgumentException("该文件夹下没有 生成图片");
+//            throw new IllegalArgumentException("该文件夹下没有 生成图片");
+            log.info("{} 该文件夹下没有 生成图片", imgFlePathStr);
+            return;
         }
+
         for (int i = 0; i < imgFiles.length; i++) {
             File imgFile = imgFiles[i];
             if (! imgFile.isFile()) {
@@ -213,10 +291,23 @@ public class VideoFileController {
     }
 
 
-
+    /**
+     * 执行命令
+     * @param cmd
+     * @return
+     * @throws IOException
+     */
     @RequestMapping("execCmd")
     public Result execCmd(String cmd) throws IOException {
-        return new Result("0", "SUCCESS", CommandUtil.run(cmd));
+        if (StringUtils.isBlank(cmd)) {
+            return new Result("0", "SUCCESS",
+                    CommandUtil.run(new String[]{"ls",
+                            "'/mnt/sdc/国产精品/〖全裸露点顶级剧情〗色色的健身教练把正在运动的押解雅捷少女弄到卫生间操翻了 原版私拍59P 高清1080P原版无水印.mp4'"}));
+
+        } else {
+            return new Result("0", "SUCCESS",
+                    CommandUtil.run(new String[]{"ls", cmd}));
+        }
     }
 
 }

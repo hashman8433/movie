@@ -30,8 +30,6 @@ public class ScanService {
         // 深度优先  todo 队列长度过长没有做控制
         Queue<VideoFile> fileQuene =
                 new LinkedBlockingQueue<>();
-//        final String filePath = "E://迅雷下载";
-
 
         singleExecutor.execute(new FileScanExecutor(filePath, fileQuene));
         singleExecutor.execute(new FileSaveExecutor(fileQuene));
