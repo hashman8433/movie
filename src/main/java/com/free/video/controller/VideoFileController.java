@@ -299,15 +299,8 @@ public class VideoFileController {
      */
     @RequestMapping("execCmd")
     public Result execCmd(String cmd) throws IOException {
-        if (StringUtils.isBlank(cmd)) {
-            return new Result("0", "SUCCESS",
-                    CommandUtil.run(new String[]{"ls",
-                            "'/mnt/sdc/国产精品/〖全裸露点顶级剧情〗色色的健身教练把正在运动的押解雅捷少女弄到卫生间操翻了 原版私拍59P 高清1080P原版无水印.mp4'"}));
-
-        } else {
-            return new Result("0", "SUCCESS",
-                    CommandUtil.run(new String[]{"ls", cmd}));
-        }
+        return new Result("0", "SUCCESS",
+                CommandUtil.run(new String[]{"ls", cmd}));
     }
 
 }
