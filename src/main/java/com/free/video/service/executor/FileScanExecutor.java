@@ -1,8 +1,9 @@
 package com.free.video.service.executor;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.free.common.config.Const;
 import com.free.common.utils.RegexUtils;
+import com.free.common.utils.SystemConfigUtils;
+import com.free.video.model.SystemConfig;
 import com.free.video.model.VideoFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.ReflectUtils;
@@ -52,7 +53,7 @@ public class FileScanExecutor implements Runnable {
 
             if (tempFile.isFile()) {
                 String fileName = tempFile.getName();
-                if (! RegexUtils.isMatch(RegexUtils.VIDEO_FILE, fileName)) {
+                if (! RegexUtils.isMatch(SystemConfigUtils.getConfig("videoFileSuffix"), fileName)) {
                     // 非视频 文件不保存
                     continue;
                 }

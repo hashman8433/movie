@@ -1,12 +1,35 @@
 package com.free.common.utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.free.video.dao.SystemConfigDao;
+import com.free.video.model.SystemConfig;
+import org.springframework.jca.context.SpringContextResourceAdapter;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
+
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegexUtils {
 
+
+    public Map<String, String> getSystemConfig() {
+
+        WebApplicationContext currentWebApplicationContext = ContextLoader.getCurrentWebApplicationContext();
+        SystemConfigDao bean = currentWebApplicationContext.getBean(SystemConfigDao.class);
+        List<SystemConfig> systemConfigList = bean.findAll();
+
+        if (CollectionUtils.isEmpty(systemConfigList)) {
+            return Collections.EMPTY_MAP;
+        }
+
+        Map<String, String> configMap = new HashMap<>();
+        for (SystemConfig systemConfig : systemConfigList) {
+            configMap.put(systemConfig.getCode(), systemConfig.getValue());
+        }
+        return configMap;
+    }
 
     private RegexUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
@@ -39,7 +62,7 @@ public class RegexUtils {
      */
     public static final String REGEX_ID_CARD18     = "^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9Xx])$";
 
-    public static final String VIDEO_FILE     = "^.*.(mp4|avi|mkv|rmvb)$";
+    public static final String VIDEO_FILE          = "^.*.(mp4|avi|mkv|rmvb)$";
     /**
      * 正则：邮箱
      */

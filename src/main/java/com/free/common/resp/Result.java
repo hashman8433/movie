@@ -27,6 +27,10 @@ public class Result implements Serializable {
         return new Result(SUCCESS_CODE, msg);
     }
 
+    public static Result successObj(Object data) {
+        return new Result(SUCCESS_CODE, "成功", data);
+    }
+
     public static Result success(String msg, Object data) {
         return new Result(SUCCESS_CODE, msg, data);
     }

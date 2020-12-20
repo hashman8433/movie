@@ -1,5 +1,7 @@
 package com.free;
 
+import com.free.common.utils.SystemConfigUtils;
+import com.free.video.model.SystemConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -15,6 +17,8 @@ public class VideoApplication {
 
 	public static void main(String[] args) {
 		applicationContext = SpringApplication.run(VideoApplication.class, args);
+		//将run方法的返回值赋值给工具类中的静态变量
+		SystemConfigUtils.applicationContext = applicationContext;
 	}
 
 	public static <T> T  getBean(Class<T> clazz) {
