@@ -23,6 +23,10 @@ public class Result implements Serializable {
         this.msg = msg;
     }
 
+    public static Result success() {
+        return success(null);
+    }
+
     public static Result success(String msg) {
         return new Result(SUCCESS_CODE, msg);
     }

@@ -1,7 +1,6 @@
 package com.free;
 
 import com.free.common.utils.SystemConfigUtils;
-import com.free.video.model.SystemConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;

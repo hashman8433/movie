@@ -36,8 +36,9 @@ public class ConvertVideo {
             status = processFLV(PATH);// 直接将文件转为flv文件
         } else if (type == 1) {
             String avifilepath = processAVI(type);
-            if (avifilepath == null)
+            if (avifilepath == null) {
                 return false;// avi文件没有得到
+            }
             status = processFLV(avifilepath);// 将avi转为flv
         }
         return status;

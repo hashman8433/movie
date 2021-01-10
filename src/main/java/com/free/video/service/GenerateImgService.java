@@ -7,6 +7,8 @@ import cn.novelweb.video.format.callback.ProgressCallback;
 import cn.novelweb.video.pojo.ProgramConfig;
 import com.free.common.utils.FileNameUtils;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +21,14 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public class GenerateImgService {
 
-    @Value("${filePath}")
-    public String filePath;
+    // @Value("${filePath:''}")
+    // public String filePath;
+
+    @Autowired
+    public SystemConfigService systemConfigService;
 
     public String generate(final String absolutePath) {
+        String filePath = systemConfigService.getValueByCode(SystemConfigService.FILE_PATH_CODE);
 
         String tmpImgPath = filePath + "img/" + DateUtil.format(new Date(), "yyyy-MM-dd") +
                 UUID.randomUUID().toString().replace("-", "") + "/";

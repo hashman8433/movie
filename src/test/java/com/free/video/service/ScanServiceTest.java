@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 public class ScanServiceTest extends BaseSpringBootTest {
 
 
-    @Value("${filePath}")
+    @Value("${filePath:''}")
     private String filePath;
 
     @Test

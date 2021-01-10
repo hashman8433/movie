@@ -23,17 +23,25 @@ public class ScanService {
 
     private final ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
 
-    @Value("${filePath}")
-    public String filePath;
+    // @Value("${filePath:''")
+    // public String filePath;
 
-    public void scanVideo() {
-        // 深度优先  todo 队列长度过长没有做控制
-        Queue<VideoFile> fileQuene =
-                new LinkedBlockingQueue<>();
+    @Autowired
+    private SystemConfigService systemConfigService;
 
-        singleExecutor.execute(new FileScanExecutor(filePath, fileQuene));
-        singleExecutor.execute(new FileSaveExecutor(fileQuene));
+    public void scanVideo()  {
+        try {
+            // 深度优先  todo 队列长度过长没有做控制
+            Queue<VideoFile> fileQuene =
+                    new LinkedBlockingQueue<>();
+            String filePath = systemConfigService.getValueByCode("filePath");
 
+            singleExecutor.execute(new FileScanExecutor(filePath, fileQuene));
+            singleExecutor.execute(new FileSaveExecutor(fileQuene));
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

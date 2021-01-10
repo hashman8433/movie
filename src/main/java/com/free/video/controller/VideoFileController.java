@@ -5,12 +5,14 @@ import com.free.common.resp.Result;
 import com.free.common.utils.CommandUtil;
 import com.free.common.utils.FileNameUtils;
 import com.free.video.dao.ImgFileDao;
+import com.free.video.dao.SystemConfigDao;
 import com.free.video.dao.VideoFileDao;
 import com.free.video.model.ImgFile;
 import com.free.video.model.VideoFile;
 import com.free.video.model.option.SearchOption;
 import com.free.video.service.GenerateImgService;
 import com.free.video.service.ScanService;
+import com.free.video.service.SystemConfigService;
 import com.free.video.service.VideoFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -56,8 +58,14 @@ public class VideoFileController {
     @Autowired
     private VideoFileService videoFileService;
 
-    @Value("${filePath}")
-    public String filePath;
+    // @Value("${filePath:''}")
+    // public String filePath;
+
+    @Autowired
+    private SystemConfigDao systemConfigDao;
+
+    @Autowired
+    private SystemConfigService systemConfigService;
 
     private final ExecutorService findFileExecutor = Executors.newSingleThreadExecutor();
     private final ExecutorService saveFileExecutor = Executors.newSingleThreadExecutor();
@@ -277,6 +285,7 @@ public class VideoFileController {
                 continue;
             }
 
+            String filePath = systemConfigService.getValueByCode(SystemConfigService.FILE_PATH_CODE);
             Date now = new Date();
             ImgFile imgFileBo = ImgFile.class.newInstance();
             imgFileBo.setFilePath(imgFile.getAbsolutePath());

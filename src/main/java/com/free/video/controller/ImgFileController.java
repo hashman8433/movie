@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 public class ImgFileController {
 
-    
+
     @Autowired
     private ImgFileDao imgFileDao;
 
