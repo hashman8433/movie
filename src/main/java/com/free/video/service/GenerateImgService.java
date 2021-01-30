@@ -3,13 +3,9 @@ package com.free.video.service;
 import cn.hutool.core.date.DateUtil;
 import cn.novelweb.video.edit.VideoEditing;
 import cn.novelweb.video.format.FormatConversion;
-import cn.novelweb.video.format.callback.ProgressCallback;
 import cn.novelweb.video.pojo.ProgramConfig;
-import com.free.common.utils.FileNameUtils;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;

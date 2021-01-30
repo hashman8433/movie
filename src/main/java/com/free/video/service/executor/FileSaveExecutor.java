@@ -1,16 +1,16 @@
 package com.free.video.service.executor;
 
+import java.util.Date;
+import java.util.Queue;
+
 import com.free.VideoApplication;
 import com.free.video.dao.VideoFileDao;
 import com.free.video.model.VideoFile;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.data.domain.Example;
-import org.springframework.orm.hibernate5.SessionHolder;
 
-import java.util.Date;
-import java.util.Optional;
-import java.util.Queue;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class FileSaveExecutor implements Runnable{
