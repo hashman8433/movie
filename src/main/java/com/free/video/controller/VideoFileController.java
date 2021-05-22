@@ -230,9 +230,7 @@ public class VideoFileController {
                     log.info("已完成 第{}个视频 剩余{}", index, videoFileList.size() - index);
                 }
                 log.info("已扫描{}个视频文件", videoFileList.size());
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         });

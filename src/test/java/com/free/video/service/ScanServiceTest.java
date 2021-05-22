@@ -1,17 +1,16 @@
 package com.free.video.service;
 
+import java.io.File;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import com.free.base.BaseSpringBootTest;
 import com.free.common.utils.RegexUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
-
-import java.io.File;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.junit.Assert.*;
 
 public class ScanServiceTest extends BaseSpringBootTest {
 
