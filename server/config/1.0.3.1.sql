@@ -69,3 +69,4 @@ CREATE TABLE `video_tag` (
   KEY `name` (`name`) USING BTREE,
   KEY `tag_type` (`tag_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
