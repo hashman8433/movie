@@ -39,24 +39,6 @@ CREATE TABLE `video_file` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- movie_test.video_file_1 definition
-
-CREATE TABLE `video_file_1` (
-  `id` varchar(64) NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `file_name` varchar(255) DEFAULT NULL,
-  `file_path` varchar(255) DEFAULT NULL,
-  `file_size` varchar(255) DEFAULT NULL,
-  `file_path_web` varchar(255) DEFAULT NULL,
-  `update_time` datetime DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL,
-  `scan_status` varchar(255) DEFAULT NULL,
-  `is_delete` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `name` (`title`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 -- movie_test.video_tag definition
 
 CREATE TABLE `video_tag` (

@@ -5,6 +5,7 @@ import cn.novelweb.video.format.FormatConversion;
 import cn.novelweb.video.format.callback.ProgressCallback;
 import cn.novelweb.video.pojo.ProgramConfig;
 import cn.novelweb.video.pojo.VideoParameters;
+import com.free.common.utils.RegexUtils;
 import org.junit.Test;
 
 import java.io.File;
@@ -57,5 +58,11 @@ public class VideoTest {
     @Test
     public void testCount() {
         System.out.println(1d / (3600 / 10d));
+    }
+
+    @Test
+    public void regexTest() {
+        System.out.println(RegexUtils.isMatch(".*.[mp4|rmvb|avi|mkv]", "12321.mp4"));
+
     }
 }

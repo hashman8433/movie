@@ -4,10 +4,7 @@ import com.free.video.dao.SystemConfigDao;
 import com.free.video.model.SystemConfig;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.context.ContextLoader;
-import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +34,7 @@ public class SystemConfigUtils {
 
         Map<String, String> configMap = new HashMap<>();
         for (SystemConfig systemConfig : systemConfigList) {
-            configMap.put(systemConfig.getCode(), systemConfig.getValue());
+            configMap.put(systemConfig.getSysCode(), systemConfig.getSysValue());
         }
         return configMap;
     }

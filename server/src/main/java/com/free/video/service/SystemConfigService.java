@@ -1,15 +1,14 @@
 package com.free.video.service;
 
-import java.util.List;
-
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.free.video.dao.SystemConfigDao;
 import com.free.video.model.SystemConfig;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author zzj
@@ -33,10 +32,10 @@ public class SystemConfigService {
         } catch (Exception e) {
             //TODO: handle exception
         }
-        query.setCode(code);
+        query.setSysCode(code);
         List<SystemConfig> systemConfigList = systemConfigDao.findAll(Example.of(query));
         if (CollectionUtils.isNotEmpty(systemConfigList)) {
-            return systemConfigList.get(0).getValue();
+            return systemConfigList.get(0).getSysValue();
         }
 
         return null;

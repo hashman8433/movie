@@ -2,7 +2,6 @@ package com.free.common.utils;
 
 import com.free.video.dao.SystemConfigDao;
 import com.free.video.model.SystemConfig;
-import org.springframework.jca.context.SpringContextResourceAdapter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
@@ -26,7 +25,7 @@ public class RegexUtils {
 
         Map<String, String> configMap = new HashMap<>();
         for (SystemConfig systemConfig : systemConfigList) {
-            configMap.put(systemConfig.getCode(), systemConfig.getValue());
+            configMap.put(systemConfig.getSysCode(), systemConfig.getSysValue());
         }
         return configMap;
     }

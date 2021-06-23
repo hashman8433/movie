@@ -1,9 +1,9 @@
 package com.free.video.service.executor;
 
 import com.free.common.config.Const;
+import com.free.common.utils.Md5CaculateUtil;
 import com.free.common.utils.RegexUtils;
 import com.free.common.utils.SystemConfigUtils;
-import com.free.video.model.SystemConfig;
 import com.free.video.model.VideoFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.ReflectUtils;
@@ -72,6 +72,9 @@ public class FileScanExecutor implements Runnable {
                     videoFile.setFileSize(String.valueOf(tempFile.getTotalSpace()));
                     videoFile.setScanStatus(Const.NOSCAN);
                     videoFile.setIsDelete(Const.NO_DELETE);
+
+                    String md5 = Md5CaculateUtil.getMD5(new File(tempFile.getAbsolutePath()));
+                    videoFile.setFileMd5(md5);
 
                     offerFail = !fileQuene.add(videoFile);
                     if (offerFail) {

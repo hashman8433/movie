@@ -24,6 +24,9 @@ public class ImgFile {
     @Column(name = "file_path") //
     private String filePath;
 
+    @Column(name = "file_content") //
+    private String fileContent;
+
     @Column(name = "file_path_web") //
     private String filePathWeb;
 

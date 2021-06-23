@@ -94,6 +94,9 @@ public class VideoFile implements Serializable {
     @Column(name = "isDelete")
     private String isDelete;
 
+    @Column(name = "file_md5")
+    private String fileMd5;
+
     // 当前页
     @Transient
     private Integer pageNo;

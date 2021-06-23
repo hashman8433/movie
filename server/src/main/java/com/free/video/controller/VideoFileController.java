@@ -1,9 +1,9 @@
 package com.free.video.controller;
 
+import cn.hutool.core.codec.Base64;
 import com.free.common.config.Const;
 import com.free.common.resp.Result;
 import com.free.common.utils.CommandUtil;
-import com.free.common.utils.FileNameUtils;
 import com.free.video.dao.ImgFileDao;
 import com.free.video.dao.SystemConfigDao;
 import com.free.video.dao.VideoFileDao;
@@ -15,10 +15,8 @@ import com.free.video.service.ScanService;
 import com.free.video.service.SystemConfigService;
 import com.free.video.service.VideoFileService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -29,6 +27,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -286,10 +285,14 @@ public class VideoFileController {
             String filePath = systemConfigService.getValueByCode(SystemConfigService.FILE_PATH_CODE);
             Date now = new Date();
             ImgFile imgFileBo = ImgFile.class.newInstance();
+
             imgFileBo.setFilePath(imgFile.getAbsolutePath());
+            // 生成图片base64 保存在数据库中
+            imgFileBo.setFileContent(Base64.encode(imgFile.getAbsolutePath()));
             imgFileBo.setFilePathWeb(imgFile.getAbsolutePath()
                     .replace(filePath.replaceAll("/", "\\\\"), "")
                     .replace("\\", "/"));
+
             imgFileBo.setCreateTime(now);
             imgFileBo.setUpdateTime(now);
             imgFileBo.setVideoFileId(videoFile.getId());

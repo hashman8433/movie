@@ -8,11 +8,9 @@ import com.free.video.dao.SystemConfigDao;
 import com.free.video.model.SystemConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,7 +32,7 @@ public class SystemConfigController {
             try {
 
                 SystemConfig query = SystemConfig.class.newInstance();
-                query.setCode(systemConfig.getCode());
+                query.setSysCode(systemConfig.getSysCode());
                 List<SystemConfig> oldSystemConfigList = systemConfigDao.findAll(Example.of(query));
                 if (CollectionUtils.isNotEmpty(oldSystemConfigList)) {
                     SystemConfig oldSystemConfig = oldSystemConfigList.get(0);
